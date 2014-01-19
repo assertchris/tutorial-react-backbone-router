@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="text/javascript" src="jquery-2.0.3/build/jquery.js"></script>
+    <script type="text/javascript" src="underscore-1.5.2/build/underscore.js"></script>
+    <script type="text/javascript" src="backbone-1.1.0/build/backbone.js"></script>
+    <script type="text/javascript" src="react-0.8.0/build/react.js"></script>
+    <script type="text/javascript" src="react-0.8.0/build/JSXTransformer.js"></script>
+  </head>
+  <body>
+    <script type="text/jsx">
+
+      /**
+       * @jsx React.DOM
+       */
+
+      var FooComponent = React.createClass({
+        render : function() {
+          return <div>foo</div>;
+        }
+      });
+
+      var BarComponent = React.createClass({
+        render : function() {
+          return <div>bar</div>;
+        }
+      });
+
+      var InterfaceComponent = React.createClass({
+        componentWillMount : function() {
+          this.callback = (function() {
+            this.forceUpdate();
+          }).bind(this);
+
+          this.props.router.on("route", this.callback);
+        },
+        componentWillUnmount : function() {
+          this.props.router.off("route", this.callback);
+        },
+        render : function() {
+          if (this.props.router.current == "foo") {
+            return <FooComponent />;
+          }
+          if (this.props.router.current == "bar") {
+            return <BarComponent />;
+          }
+          return <div />;
+        }
+      });
+        
+      var Router = Backbone.Router.extend({
+
+        routes : {
+          "foo" : "foo",
+          "bar" : "bar"
+        },
+
+        foo : function() {
+          this.current = "foo";
+        },
+
+        bar : function() {
+          this.current = "bar";
+        }
+
+      });
+
+      var router = new Router();
+
+
+      React.renderComponent(
+        <InterfaceComponent router={router} />,
+        document.body
+      );
+
+      Backbone.history.start();
+
+    </script>
+  </body>
+</html>

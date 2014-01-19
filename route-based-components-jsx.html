@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="text/javascript" src="jquery-2.0.3/build/jquery.js"></script>
+    <script type="text/javascript" src="underscore-1.5.2/build/underscore.js"></script>
+    <script type="text/javascript" src="backbone-1.1.0/build/backbone.js"></script>
+    <script type="text/javascript" src="react-0.8.0/build/react.js"></script>
+    <script type="text/javascript" src="react-0.8.0/build/JSXTransformer.js"></script>
+  </head>
+  <body>
+    <script type="text/jsx">
+
+      /**
+       * @jsx React.DOM
+       */
+
+      var FooComponent = React.createClass({
+        render : function() {
+          return <div>foo</div>;
+        }
+      });
+
+      var BarComponent = React.createClass({
+        render : function() {
+          return <div>bar</div>;
+        }
+      });
+        
+      var Router = Backbone.Router.extend({
+
+        routes : {
+          "foo" : "foo",
+          "bar" : "bar"
+        },
+
+        foo : function() {
+          React.renderComponent(
+            <FooComponent />,
+            document.body
+          );
+        },
+
+        bar : function() {
+          React.renderComponent(
+            <BarComponent />,
+            document.body
+          );
+        }
+
+      });
+
+      new Router();
+
+      Backbone.history.start();
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="text/javascript" src="jquery-2.0.3/build/jquery.js"></script>
+    <script type="text/javascript" src="underscore-1.5.2/build/underscore.js"></script>
+    <script type="text/javascript" src="backbone-1.1.0/build/backbone.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+        
+      var Router = Backbone.Router.extend({
+
+        routes : {
+          ""    : "index",
+          "foo" : "foo",
+          "bar" : "bar"
+        },
+
+        index : function() {
+          console.log("index");
+        },
+
+        foo : function() {
+          console.log("foo");
+        },
+
+        bar : function() {
+          console.log("bar");
+        }
+
+      });
+
+      new Router();
+
+      Backbone.history.start();
+
+    </script>
+  </body>
+</html>

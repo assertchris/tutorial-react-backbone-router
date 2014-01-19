@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="text/javascript" src="jquery-2.0.3/build/jquery.js"></script>
+    <script type="text/javascript" src="underscore-1.5.2/build/underscore.js"></script>
+    <script type="text/javascript" src="backbone-1.1.0/build/backbone.js"></script>
+    <script type="text/javascript" src="react-0.8.0/build/react-with-addons.js"></script>
+    <script type="text/javascript" src="react-0.8.0/build/JSXTransformer.js"></script>
+    <style type="text/css">
+
+      .animate-enter {
+        opacity    : 0.01;
+        transition : opacity .5s ease-in;
+      }
+
+      .animate-enter.animate-enter-active {
+        opacity : 1;
+      }
+
+      .animate-leave {
+        opacity    : 1;
+        transition : opacity .5s ease-in;
+      }
+
+      .animate-leave.animate-leave-active {
+        opacity : 0.01;
+      }
+
+      a {
+        cursor : pointer;
+        color  : blue;
+      }
+
+    </style>
+  </head>
+  <body>
+    <script type="text/jsx">
+
+      /**
+       * @jsx React.DOM
+       */
+
+      var RouterMixin = {
+        componentWillMount : function() {
+          this.callback = (function() {
+            this.forceUpdate();
+          }).bind(this);
+
+          this.props.router.on("route", this.callback);
+        },
+        componentWillUnmount : function() {
+          this.props.router.off("route", this.callback);
+        }
+      };
+
+      var FooComponent = React.createClass({
+        mixins : [RouterMixin],
+        handle : function() {
+          this.props.router.navigate("bar", {
+            trigger : true
+          });
+        },
+        render : function() {
+
+          var className = "animate-leave animate-leave-active";
+
+          if (this.props.router.current == "foo") {
+            className = "animate-enter animate-enter-active";
+          }
+
+          return (
+            <div className={className}>
+              in foo, 
+              <a onClick={this.handle}>go to bar</a>
+            </div>
+          );
+        }
+      });
+
+      var BarComponent = React.createClass({
+        mixins : [RouterMixin],
+        handle : function() {
+          this.props.router.navigate("foo", {
+            trigger : true
+          });
+        },
+        render : function() {
+
+          var className = "animate-leave animate-leave-active";
+
+          if (this.props.router.current == "bar") {
+            className = "animate-enter animate-enter-active";
+          }
+
+          return (
+            <div className={className}>
+              in bar, 
+              <a onClick={this.handle}>go to foo</a>
+            </div>
+          );
+        }
+      });
+
+      var InterfaceComponent = React.createClass({
+        mixins : [RouterMixin],
+        render : function() {
+          var router = this.props.router;
+          return (
+            <div>
+              <FooComponent router={router} />
+              <BarComponent router={router} />
+            </div>
+          );
+        }
+      });
+        
+      var Router = Backbone.Router.extend({
+
+        routes : {
+          "foo" : "foo",
+          "bar" : "bar"
+        },
+
+        foo : function() {
+          this.current = "foo";
+        },
+
+        bar : function() {
+          this.current = "bar";
+        }
+
+      });
+
+      var router = new Router();
+
+
+      React.renderComponent(
+        <InterfaceComponent router={router} />,
+        document.body
+      );
+
+      Backbone.history.start();
+
+    </script>
+  </body>
+</html>
